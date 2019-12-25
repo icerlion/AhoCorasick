@@ -49,7 +49,7 @@ private:
 
 public:
     CAhoCorasick(bool bCaseSensitive = true)
-        :m_bbCaseSensitive(bCaseSensitive),
+        :m_bCaseSensitive(bCaseSensitive),
         m_nNextNodeId(-1),
         m_pRootNode(nullptr)
     {
@@ -234,7 +234,7 @@ private:
 
     inline char FixStateValue(char chValue) const
     {
-        if (m_bbCaseSensitive)
+        if (m_bCaseSensitive)
         {
             return chValue;
         }
@@ -246,7 +246,7 @@ private:
     }
 
 private:
-    bool m_bbCaseSensitive;
+    bool m_bCaseSensitive;
     int m_nNextNodeId;
     StateNode* m_pRootNode;
     // Key: state value
