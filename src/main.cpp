@@ -8,6 +8,7 @@ int main()
     hAhoCorasick.AddWord("ELF");
     hAhoCorasick.AddWord("ELEPHANT");
     hAhoCorasick.AddWord("PHANTOM");
+    hAhoCorasick.RefreshRedirectState();
     std::set<std::string> setRst = hAhoCorasick.SearchPattern("000abcdABcd012ELELF");
     return 0;
 }

@@ -20,8 +20,6 @@
 #include <set>
 #include <assert.h>
 #include <algorithm>
-#include <iostream>
-
 
 class CAhoCorasick
 {
@@ -92,10 +90,59 @@ public:
                 pCurNode = itFind->second;
             }
         }
-        BuildRedirectState(setHitStateValue);
         RETURN_ON_NULLPTR(pCurNode, false);
         pCurNode->bOutputFlag = true;
         return true;
+    }
+
+    inline void RefreshRedirectState()
+    {
+        std::set<char> setState;
+        for (auto& kvp : m_mapStateNode)
+        {
+            setState.insert(kvp.first);
+        }
+        BuildRedirectState(setState);
+    }
+
+    // Return true if there has pattern match the input string, faster then SearchPattern
+    inline bool MatchPattern(const std::string& strInput) const
+    {
+        bool bResult = false;
+        StateNode* pCurNode = m_pRootNode;
+        for (char nCurState : strInput)
+        {
+            nCurState = FixStateValue(nCurState);
+            while (true)
+            {
+                BREAK_ON_NULLPTR(pCurNode);
+                auto itFind = pCurNode->mapChildNode.find(nCurState);
+                if (itFind == pCurNode->mapChildNode.end())
+                {
+                    if (pCurNode == m_pRootNode)
+                    {
+                        break;
+                    }
+                    BREAK_ON_NULLPTR(pCurNode);
+                    pCurNode = pCurNode->pRedirectNode;
+                }
+                else
+                {
+                    pCurNode = itFind->second;
+                    BREAK_ON_NULLPTR(pCurNode);
+                    if (pCurNode->bOutputFlag)
+                    {
+                        bResult = true;
+                    }
+                    break;
+                }
+            }
+            if (bResult)
+            {
+                break;
+            }
+        }
+        return bResult;
     }
 
     // Output all search result
