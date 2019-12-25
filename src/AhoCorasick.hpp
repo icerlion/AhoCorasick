@@ -19,6 +19,9 @@
 #include <string>
 #include <set>
 #include <assert.h>
+#include <algorithm>
+#include <iostream>
+
 
 class CAhoCorasick
 {
@@ -32,8 +35,8 @@ private:
         StateNode()
             :nNodeId(),
             nStateValue(0),
-            pParentNode(nullptr),
             nHeight(0),
+            pParentNode(nullptr),
             pRedirectNode(nullptr),
             bOutputFlag(false)
         {
