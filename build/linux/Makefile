@@ -8,7 +8,7 @@ Compiler_Flags=-O0 -Wall -ggdb -std=c++11
 # Include_Path
 Include_Path=\
 
-Output_File=../../dist/AhoCorasick.exe
+Output_File=../../publish/dist/AhoCorasick
 
 # PreCompile_Macro
 PreCompile_Macro=-DGCC_BUILD -DLINUX -D_DEBUG 
@@ -33,23 +33,23 @@ entry: build
 .PHONY: init
 init:
 	@echo "|===>RunTarget: init of AhoCorasick"
-	mkdir -p ../../bin/Dist
-	mkdir -p ../../publish/Dist
+	mkdir -p ../../bin/dist
+	mkdir -p ../../publish/dist
 
 # build of AhoCorasick
 .PHONE: build
 build: init\
-	../../bin/Dist/main.o
+	../../bin/dist/main.o
 	@echo "|===>RunTarget: build of AhoCorasick"
 	g++ \
-	../../bin/Dist/main.o  -lrt $(Library_Path) $(Link_Library_Static) $(Link_Library_Dynamic) -o $(Output_File)
+	../../bin/dist/main.o  -lrt $(Library_Path) $(Link_Library_Static) $(Link_Library_Dynamic) -o $(Output_File)
 	@echo "|===>Finish Output $(Output_File)"
 
 # Compile cpp file ../../src/main.cpp
--include ../../bin/Dist/main.d
-../../bin/Dist/main.o: ../../src/main.cpp
-	$(Cpp_Compiler) $(Include_Path) $(PreCompile_Macro) $(Compiler_Flags) -c ../../src/main.cpp -o ../../bin/Dist/main.o
-	$(Cpp_Compiler) $(Include_Path) $(PreCompile_Macro) $(Compiler_Flags) -MM ../../src/main.cpp > ../../bin/Dist/main.d
+-include ../../bin/dist/main.d
+../../bin/dist/main.o: ../../src/main.cpp
+	$(Cpp_Compiler) $(Include_Path) $(PreCompile_Macro) $(Compiler_Flags) -c ../../src/main.cpp -o ../../bin/dist/main.o
+	$(Cpp_Compiler) $(Include_Path) $(PreCompile_Macro) $(Compiler_Flags) -MM ../../src/main.cpp > ../../bin/dist/main.d
 
 # clean project output content
 .PHONY: clean
