@@ -24,7 +24,6 @@
 class CAhoCorasick
 {
 private:
-#define CONTINUE_ON_NULLPTR(POINTER) if (nullptr == POINTER) { assert(false); continue; }
 #define BREAK_ON_NULLPTR(POINTER) if (nullptr == POINTER) { assert(false); break; }
 #define RETURN_ON_NULLPTR(POINTER, RETVAL) if (nullptr == POINTER) { assert(false); return RETVAL; }
     // Define state node
@@ -59,6 +58,11 @@ public:
     }
 
     ~CAhoCorasick()
+    {
+        Destroy();
+    }
+
+    inline void Destroy()
     {
         for (StateNode* pNode : m_vecStateNode)
         {
@@ -95,14 +99,20 @@ public:
         return true;
     }
 
+    // Refresh redirect state for every node
     inline void RefreshRedirectState()
     {
-        std::set<char> setState;
         for (auto& kvp : m_mapStateNode)
         {
-            setState.insert(kvp.first);
+            const std::set<StateNode*>& setStateNode = kvp.second;
+            for (StateNode* pBaseNode : setStateNode)
+            {
+                for (StateNode* pRedirectNode : setStateNode)
+                {
+                    TryRefreshRedirectNode(pBaseNode, pRedirectNode);
+                }
+            }
         }
-        BuildRedirectState(setState);
     }
 
     // Return true if there has pattern match the input string, faster then SearchPattern
@@ -211,6 +221,10 @@ private:
         {
             return false;
         }
+        if (nullptr != pBaseNode->pRedirectNode && pBaseNode->pRedirectNode->nHeight >= pRedirectNode->nHeight)
+        {
+            return false;
+        }
         bool bResult = true;
         StateNode* pBaseCursor = pBaseNode;
         StateNode* pRedirectCursor = pRedirectNode;
@@ -228,12 +242,7 @@ private:
         }
         if (bResult)
         {
-            RETURN_ON_NULLPTR(pBaseNode->pRedirectNode, false);
-            RETURN_ON_NULLPTR(pRedirectNode, false);
-            if (pBaseNode->pRedirectNode->nHeight < pRedirectNode->nHeight)
-            {
-                pBaseNode->pRedirectNode = pRedirectNode;
-            }
+            pBaseNode->pRedirectNode = pRedirectNode;
         }
         return bResult;
     }
